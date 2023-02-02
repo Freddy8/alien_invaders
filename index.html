@@ -98,8 +98,22 @@
 
       function startGame(){
         console.log("start game");
+        player.animFrame = requestAnimationFrame(update);
+
       }
 
+      function update() {
+        let tempPos = myShip.offsetLeft;
+        if(keyV.left) {
+          tempPos -= player.speed;
+        }
+        if(keyV.right) {
+          tempPos += player.speed;
+        }
+        myShip.style.left = tempPos + "px";
+        player.animFrame = requestAnimationFrame(update);
+
+      }
 
 
     </script>
