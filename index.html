@@ -76,12 +76,16 @@
         let key = e.keyCode;
         if (key === 37) {
           keyV.left = true;
-        } else if (key === 39) {
-          keyV.right = true;
-        } else if (key === 38 || key === 32) {
-          player.fire = true;
         }
-        console.log(keyV);
+        else if (key === 39) {
+          keyV.right = true;
+        }
+         else if (key === 38 || key === 32) {
+          if (!player.fire) {
+            addShoot();
+          };
+
+        }
 
       })
 
@@ -89,10 +93,10 @@
         let key = e.keyCode;
         if (key === 37) {
           keyV.left = false;
-        } else if (key === 39) {
+        }
+        else if (key === 39) {
           keyV.right = false;
         }
-        console.log(keyV);
 
       })
 
@@ -102,8 +106,33 @@
 
       }
 
+      function addShoot() {
+        player.fire = true;
+        fireme.classList.remove("hide");
+        fireme.xpos = (myShip.offsetLeft + (myShip.offsetWidth/2));
+        fireme.ypos = myShip.offsetTop - 10;
+        fireme.style.left = fireme.xpos + "px";
+        fireme.style.top = fireme.ypos + "px";
+
+      }
+
       function update() {
         let tempPos = myShip.offsetLeft;
+
+        if(player.fire) {
+          if(fireme.ypos > 0) {
+            fireme.ypos -= 15;
+            fireme.style.top = fireme.ypos + "px";
+          }
+          else {
+            player.fire = false;
+            fireme.classList.add("hide");
+            fireme.ypos = containerDim.height + 100;
+          }
+        }
+
+
+
         if(keyV.left && tempPos > containerDim.left) {
           tempPos -= player.speed;
         }
