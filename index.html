@@ -42,6 +42,23 @@
       .hide {
         display: none;
       }
+
+      .alien {
+        position: absolute;
+        display: inline-block;
+        top: 0;
+        left: 0;
+        width: 80px;
+        height: 50px;
+        padding: 5px;
+        color: white;
+        background-color: blue;
+        box-shadow: 0px 1px 8px 0px black;
+        font-size: 1em;
+        text-align: center;
+        border-radius: 10px;
+      }
+
     </style>
   </head>
 
@@ -114,24 +131,37 @@
       }
 
       function setupAliens(num) {
-        let lastCol = containerDim.width - 200;
+        let tempWidth = 70;
+        let lastCol = containerDim.width - tempWidth;
         let row = {
-          x: (lastCol % 100)/2,
+          x: containerDim.left,
           y: 50
         }
-        let tempWidth = 100;
+
         for (let x = 0; x < num; x++) {
           if (row.x > (lastCol - tempWidth)) {
             row.y += 70;
-            row.x = (lastCol % 100) / 2
+            row.x = containerDim.left;
           }
           alienMaker(row, tempWidth);
-          row.x += tempWidth;
+          row.x += tempWidth + 20;
         }
       }
 
       function alienMaker(row, tempWidth) {
         console.log(row);
+        let div = document.createElement("div");
+        div.classList.add("alien");
+        div.style.width = tempWidth + "px";
+        div.xpos = Math.floor(row.x);
+        div.ypos = Math.floor(row.y);
+        div.style.left = div.xpos + "px";
+        div.style.top = div.ypos + "px";
+        div.directionMove = 1;
+        container.appendChild(div);
+        console.log(div);
+
+
       }
 
       function addShoot() {
