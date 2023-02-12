@@ -84,11 +84,20 @@
 
       }
 
+      .topbar{
+        height: 50px;
+        width: 100%;
+        background-color: black;
+        color: white;
+        text-align: center;
+        font-size:2em;
+      }
+
     </style>
   </head>
 
   <body>
-    <div class="topBar">Score : <span class="score">0</span></div>
+    <div class="topBar"> Score : <span class="score">0</span> <span class ="message"></span> </div>
     <div class="container">
       <div class="startButton">Start Game</div>
       <div class="myShip"></div>
@@ -102,6 +111,7 @@
       const fireme = document.querySelector(".fireme");
       const scoreOutput = document.querySelector(".score");
       const containerDim = container.getBoundingClientRect();
+      const message = document.querySelector(".message");
 
       btn_start.addEventListener("click", startGame);
 
@@ -145,6 +155,8 @@
       function gameOver() {
         btn_start.style.display = "block";
         btn_start.innerHTML = "Restart New Game";
+        player.frie = true;
+        fireme.classList.add("hide");
 
       }
 
@@ -160,9 +172,12 @@
           clearAliens();
           player.gameOver = false;
           btn_start.style.display = "none";
-          player.alienSpeed = 30;
+          player.alienSpeed = 10;
+          player.score = 0;
+          player.fire = false;
+          scoreOutput.textContent = player.score;
           setupAliens(5);
-          console.log("start game");
+          messageOutput("start game");
           player.animFrame = requestAnimationFrame(update);
         }
 
@@ -191,7 +206,10 @@
       }
 
       function alienMaker(row, tempWidth) {
-        console.log(row);
+        if (row.y > (containerDim.height - 200)) {
+          return;
+        }
+
         let div = document.createElement("div");
         div.classList.add("alien");
         div.style.backgroundColor = randomColor();
@@ -218,15 +236,13 @@
         div.style.top = div.ypos + "px";
         div.directionMove = 1;
         container.appendChild(div);
-        console.log(div);
-
 
       }
 
       function addShoot() {
         player.fire = true;
         fireme.classList.remove("hide");
-        fireme.xpos = (myShip.offsetLeft + (myShip.offsetWidth/2));
+        fireme.xpos = (myShip.offsetLeft + (myShip.offsetWidth / 2));
         fireme.ypos = myShip.offsetTop - 10;
         fireme.style.left = fireme.xpos + "px";
         fireme.style.top = fireme.ypos + "px";
@@ -237,20 +253,34 @@
         let aRect = a.getBoundingClientRect();
         let bRect = b.getBoundingClientRect();
         return !(
-          (aRect.bottom < bRect.top) ||
-          (aRect.top < bRect.bottom) ||
-          (aRect.right < bRect.left) ||
-          (aRect.left > bRect.right)
+          (aRect.bottom < bRect.top) || (aRect.top < bRect.bottom) || (aRect.right < bRect.left) || (aRect.left > bRect.right)
         )
+      }
+
+      function messageOutput(mes) {
+        message.innerHTML = mes;
       }
 
       function update() {
         if (!player.gameOver) {
           let tempAliens = document.querySelectorAll(".alien");
+          if (tempAliens.length == 0) {
+            player.gameOver = true;
+            messageOutput("You Won");
+            gameOver();
+          }
+
           for (let x = tempAliens.length - 1; x > -1; x--) {
             let el = tempAliens[x];
             if (isCollide(el,fireme)) {
-              console.log("HIT")
+              player.alienSpeed++;
+              player.score++;
+              scoreOutput.textContent = player.score;
+              player.fire = false;
+              fireme.classList.add("hide");
+              el.parentNode.removeChild(el);
+              fireme.ypos = containerDim.height + 100;
+
             }
 
             if (el.xpos > (containerDim.width - el.offsetWidth) || el.xpos < containerDim.left) {
