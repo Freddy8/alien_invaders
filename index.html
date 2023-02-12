@@ -233,11 +233,26 @@
 
       }
 
+      function isCollide(a, b) {
+        let aRect = a.getBoundingClientRect();
+        let bRect = b.getBoundingClientRect();
+        return !(
+          (aRect.bottom < bRect.top) ||
+          (aRect.top < bRect.bottom) ||
+          (aRect.right < bRect.left) ||
+          (aRect.left > bRect.right)
+        )
+      }
+
       function update() {
         if (!player.gameOver) {
           let tempAliens = document.querySelectorAll(".alien");
           for (let x = tempAliens.length - 1; x > -1; x--) {
             let el = tempAliens[x];
+            if (isCollide(el,fireme)) {
+              console.log("HIT")
+            }
+
             if (el.xpos > (containerDim.width - el.offsetWidth) || el.xpos < containerDim.left) {
               el.directionMove *= -1;
               el.ypos += 40;
